@@ -33,10 +33,10 @@ export function correctEmail(
   if (!email) return null;
   
   // Handle voice input "at" → "@" replacement
-  let processedEmail = email.toLowerCase().trim();
+  let processedEmail = email.trim();
   let atReplaced = false;
-  if (processedEmail.includes(' at ') && !processedEmail.includes('@')) {
-    processedEmail = processedEmail.replace(' at ', '@');
+  if (processedEmail.toLowerCase().includes(' at ') && !processedEmail.includes('@')) {
+    processedEmail = processedEmail.replace(/ at /i, '@');
     atReplaced = true;
   }
   
@@ -46,25 +46,38 @@ export function correctEmail(
   const parts = processedEmail.split('@');
   if (parts.length !== 2) return null;
   
-  const [username, domain] = parts;
+  let [username, domain] = parts;
   if (!username || !domain) return null;
   
-  // If we only replaced "at" and the rest is valid, return that suggestion
-  if (atReplaced && EMAIL_REGEX.test(processedEmail)) {
+  // Check typo fixes with original case
+  if (TYPO_FIXES[domain]) {
     return {
       original: email,
-      suggested: processedEmail,
+      suggested: `${username.toLowerCase()}@${TYPO_FIXES[domain]}`,
+      confidence: 0.95,
+      reason: 'Common typo fixed'
+    };
+  }
+  
+  // Convert to lowercase for further processing
+  username = username.toLowerCase();
+  domain = domain.toLowerCase();
+  
+  // If we only replaced "at" and the rest is valid, return that suggestion
+  if (atReplaced && EMAIL_REGEX.test(`${username}@${domain}`)) {
+    return {
+      original: email,
+      suggested: `${username}@${domain}`,
       confidence: 0.9,
       reason: 'Replaced "at" with @ symbol'
     };
   }
   
-  // Check direct typo fixes
+  // Check direct typo fixes for lowercase domain
   if (TYPO_FIXES[domain]) {
-    const suggested = `${username}@${TYPO_FIXES[domain]}`;
     return {
       original: email,
-      suggested: atReplaced ? suggested : suggested,
+      suggested: `${username}@${TYPO_FIXES[domain]}`,
       confidence: 0.95,
       reason: 'Common typo fixed'
     };
@@ -114,6 +127,9 @@ export function correctEmail(
   // Check custom domains if provided
   if (config.customDomains && config.customDomains.length > 0) {
     for (const customDomain of config.customDomains) {
+      // Skip if it's an exact match (already valid)
+      if (domain === customDomain) continue;
+      
       if (isCloseMatch(domain, customDomain)) {
         return {
           original: email,
