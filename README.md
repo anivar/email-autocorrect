@@ -6,26 +6,24 @@
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/react-native-email-autocorrect)](https://bundlephobia.com/package/react-native-email-autocorrect)
 [![New Architecture](https://img.shields.io/badge/New%20Architecture-Compatible-brightgreen)](https://reactnative.dev/docs/the-new-architecture/landing-page)
 
-A lightweight, zero-dependency email validation and autocorrection library for React Native. Catches common email typos and suggests corrections in real-time. **Fully compatible with React Native's New Architecture (Fabric & TurboModules).**
+> Smart email validation and typo correction for React Native. Reduce support tickets and improve user experience with intelligent email suggestions.
 
-## Features
+<p align="center">
+  <img src="https://raw.githubusercontent.com/anivar/react-native-email-autocorrect/main/demo.gif" alt="Demo" width="300">
+</p>
 
-- 🔧 **Smart Autocorrection** - Fixes common typos like "gmial.com" → "gmail.com"
-- ✅ **Real-time Validation** - Instant feedback on email format
-- 🌍 **Regional Support** - Suggests appropriate TLDs based on location
+## ✨ Features
+
+- 🔧 **Smart Autocorrection** - Fixes common typos like `gmial.com` → `gmail.com`
 - 📱 **Mobile Optimized** - Handles autocorrect and voice input errors
-- 🎯 **High Accuracy** - Only suggests corrections with high confidence
-- 🪶 **Lightweight** - ~3KB gzipped, zero dependencies
+- 🌍 **Regional Support** - Suggests country-specific domains (e.g., `yahoo.co.uk` for UK users)
+- 🎯 **High Accuracy** - Only shows suggestions with high confidence
+- 🚀 **Zero Dependencies** - Pure JavaScript, no native modules needed
 - 🔒 **Privacy First** - All processing happens on-device
+- ⚡ **Blazing Fast** - ~3KB gzipped, <1ms processing time
+- 🏗️ **Future Proof** - Works with both old and new React Native architecture
 
-## Requirements
-
-- React Native 0.70+
-- React 18+
-- Works with both Old and New Architecture
-- No native code = No pod install needed!
-
-## Installation
+## 📦 Installation
 
 ```bash
 npm install react-native-email-autocorrect
@@ -37,9 +35,11 @@ pnpm add react-native-email-autocorrect
 
 **That's it!** No native code means no `pod install` or rebuilding needed.
 
-## Quick Start
+## 🚀 Quick Start
 
 ### Using the Component
+
+The easiest way to get started:
 
 ```tsx
 import { EmailInput } from 'react-native-email-autocorrect';
@@ -53,6 +53,7 @@ function SignupForm() {
       }}
       onEmailSubmit={(email) => {
         // Handle form submission
+        console.log('Submitted:', email);
       }}
     />
   );
@@ -60,6 +61,8 @@ function SignupForm() {
 ```
 
 ### Using the Hook
+
+For custom UI implementations:
 
 ```tsx
 import { useEmailAutocorrect } from 'react-native-email-autocorrect';
@@ -80,15 +83,21 @@ function CustomEmailInput() {
         onChangeText={setEmail}
         placeholder="Email"
         keyboardType="email-address"
+        style={[
+          styles.input,
+          validation.error && styles.inputError
+        ]}
       />
       
       {validation.error && (
-        <Text style={{ color: 'red' }}>{validation.error}</Text>
+        <Text style={styles.errorText}>{validation.error}</Text>
       )}
       
       {suggestion && (
         <TouchableOpacity onPress={acceptSuggestion}>
-          <Text>Did you mean {suggestion.suggested}?</Text>
+          <Text style={styles.suggestion}>
+            Did you mean {suggestion.suggested}?
+          </Text>
         </TouchableOpacity>
       )}
     </View>
@@ -96,56 +105,83 @@ function CustomEmailInput() {
 }
 ```
 
-### Direct Usage
+### Direct Functions
+
+For maximum control:
 
 ```tsx
 import { correctEmail, validateEmail } from 'react-native-email-autocorrect';
 
 // Check for typos
 const suggestion = correctEmail('user@gmial.com');
-// { suggested: 'user@gmail.com', confidence: 0.95, reason: 'Common typo fixed' }
+if (suggestion) {
+  console.log(suggestion.suggested); // 'user@gmail.com'
+}
 
 // Validate format
 const validation = validateEmail('user@gmail.com');
-// { isValid: true }
+console.log(validation.isValid); // true
 ```
 
-## What It Corrects
+## 🎯 What It Corrects
 
 ### Common Typos
-- `gmial.com` → `gmail.com`
-- `yaho.com` → `yahoo.com`
-- `hotmial.com` → `hotmail.com`
+```
+gmial.com     → gmail.com
+yahooo.com    → yahoo.com
+hotmial.com   → hotmail.com
+outlok.com    → outlook.com
+```
 
 ### Missing Extensions
-- `john@gmail` → `john@gmail.com`
-- `john@yahoo` → `john@yahoo.com`
-- `john@company` → `john@company.com`
+```
+john@gmail    → john@gmail.com
+john@yahoo    → john@yahoo.com
+john@company  → john@company.com
+```
 
 ### Mobile Autocorrect
-- `Gmail.com` → `gmail.com`
-- `email.com` → `gmail.com`
+```
+Gmail.com     → gmail.com
+email.com     → gmail.com
+YAHOO.COM     → yahoo.com
+```
 
 ### Regional Domains
-- `john@yahoo` in UK → `john@yahoo.co.uk`
-- `john@yahoo` in Canada → `john@yahoo.ca`
+```
+john@yahoo (UK)     → john@yahoo.co.uk
+john@yahoo (Canada) → john@yahoo.ca
+john@yahoo (France) → john@yahoo.fr
+```
 
-## Configuration
+### Voice Input Errors
+```
+g mail.com    → gmail.com
+at gmail.com  → @gmail.com
+gee mail      → gmail.com
+```
+
+## ⚙️ Configuration
 
 ```tsx
 const config = {
-  enableSuggestions: true,    // Enable autocorrection suggestions
-  enableValidation: true,     // Enable format validation
-  customDomains: ['company.com'], // Your company domains
-  country: 'UK',             // User's country for regional TLDs
-  minConfidence: 0.7,        // Minimum confidence for suggestions
-  debounceMs: 300,           // Debounce delay in milliseconds
+  // Enable/disable features
+  enableSuggestions: true,    // Show autocorrect suggestions
+  enableValidation: true,     // Validate email format
+  
+  // Customize behavior
+  country: 'UK',              // For regional domains
+  minConfidence: 0.7,         // Minimum confidence threshold
+  debounceMs: 300,            // Debounce delay
+  
+  // Custom domains
+  customDomains: ['company.com', 'corporate.org']
 };
 
 const { email, suggestion } = useEmailAutocorrect(config);
 ```
 
-## API Reference
+## 📚 API Reference
 
 ### Components
 
@@ -153,59 +189,71 @@ const { email, suggestion } = useEmailAutocorrect(config);
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `onEmailChange` | `(email: string, isValid: boolean) => void` | - | Called on email change |
-| `onEmailSubmit` | `(email: string) => void` | - | Called on form submission |
+| `onEmailChange` | `(email: string, isValid: boolean) => void` | - | Called on every change |
+| `onEmailSubmit` | `(email: string) => void` | - | Called on submission |
 | `config` | `EmailAutocorrectConfig` | `{}` | Configuration options |
-| `showSuggestion` | `boolean` | `true` | Show autocorrect suggestions |
+| `showSuggestion` | `boolean` | `true` | Show inline suggestions |
 | `showValidation` | `boolean` | `true` | Show validation errors |
-| `placeholder` | `string` | `"Enter your email"` | Input placeholder |
 | `...TextInputProps` | - | - | All React Native TextInput props |
 
 ### Hooks
 
 #### `useEmailAutocorrect(config?)`
 
-Returns:
-- `email: string` - Current email value
-- `setEmail: (email: string) => void` - Update email
-- `validation: { isValid: boolean, error?: string }` - Validation result
-- `suggestion: { suggested: string, confidence: number } | null` - Suggestion
-- `acceptSuggestion: () => void` - Accept the suggestion
-- `rejectSuggestion: () => void` - Reject the suggestion
-- `isChecking: boolean` - Loading state
+Returns an object with:
+
+```tsx
+{
+  email: string;                    // Current email value
+  setEmail: (email: string) => void; // Update email
+  validation: {                     // Validation state
+    isValid: boolean;
+    error?: string;
+  };
+  suggestion: {                     // Current suggestion
+    suggested: string;
+    confidence: number;
+    reason: string;
+  } | null;
+  acceptSuggestion: () => void;     // Accept suggestion
+  rejectSuggestion: () => void;     // Reject suggestion
+  isChecking: boolean;              // Loading state
+}
+```
 
 ### Functions
 
-#### `correctEmail(email: string, config?)`
-
+#### `correctEmail(email, config?)`
 Returns `EmailSuggestion | null`
 
-#### `validateEmail(email: string)`
-
+#### `validateEmail(email)`
 Returns `ValidationResult`
 
-## Examples
+## 💡 Examples
 
-### With Form Validation
+### With React Hook Form
 
 ```tsx
-function CheckoutForm() {
-  const { email, validation, setEmail } = useEmailAutocorrect();
-  const [canSubmit, setCanSubmit] = useState(false);
+import { useForm, Controller } from 'react-hook-form';
+import { EmailInput } from 'react-native-email-autocorrect';
 
-  useEffect(() => {
-    setCanSubmit(validation.isValid);
-  }, [validation.isValid]);
+function LoginForm() {
+  const { control, handleSubmit } = useForm();
 
   return (
-    <View>
-      <EmailInput onEmailChange={setEmail} />
-      <Button
-        title="Continue"
-        disabled={!canSubmit}
-        onPress={handleCheckout}
-      />
-    </View>
+    <Controller
+      control={control}
+      name="email"
+      render={({ field: { onChange, value } }) => (
+        <EmailInput
+          value={value}
+          onEmailChange={(email, isValid) => {
+            onChange(email);
+          }}
+          placeholder="Email address"
+        />
+      )}
+    />
   );
 }
 ```
@@ -217,29 +265,125 @@ function CheckoutForm() {
   style={{
     borderColor: '#007AFF',
     borderRadius: 12,
+    paddingHorizontal: 20,
   }}
-  placeholder="Your email address"
   placeholderTextColor="#999"
+  showSuggestion={true}
+  config={{ country: 'USA' }}
 />
 ```
 
-## Performance
+### With Formik
+
+```tsx
+import { Formik } from 'formik';
+import { useEmailAutocorrect } from 'react-native-email-autocorrect';
+
+function FormikExample() {
+  const { validation, suggestion, acceptSuggestion } = useEmailAutocorrect();
+
+  return (
+    <Formik
+      initialValues={{ email: '' }}
+      validate={values => {
+        const errors = {};
+        if (!validation.isValid && values.email) {
+          errors.email = validation.error;
+        }
+        return errors;
+      }}
+      onSubmit={values => console.log(values)}
+    >
+      {({ handleChange, handleBlur, values, errors }) => (
+        <View>
+          <TextInput
+            onChangeText={handleChange('email')}
+            onBlur={handleBlur('email')}
+            value={values.email}
+            keyboardType="email-address"
+          />
+          {errors.email && <Text>{errors.email}</Text>}
+          {suggestion && (
+            <TouchableOpacity onPress={acceptSuggestion}>
+              <Text>Use: {suggestion.suggested}</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      )}
+    </Formik>
+  );
+}
+```
+
+## 🌍 Supported Email Providers
+
+The library recognizes and provides intelligent corrections for:
+
+- **Global**: Gmail, Yahoo, Hotmail, Outlook, AOL, iCloud, ProtonMail
+- **Regional**: Provider-specific TLDs for UK, Canada, Australia, France, Spain, and more
+- **Business**: Custom domains via configuration
+
+## 📱 React Native Compatibility
+
+| React Native | This Library | Status |
+|--------------|--------------|---------|
+| 0.70+        | ✅           | Fully supported |
+| 0.60-0.69    | ✅           | Fully supported |
+| < 0.60       | ⚠️           | Requires manual linking |
+
+Works with:
+- ✅ iOS
+- ✅ Android  
+- ✅ Web (react-native-web)
+- ✅ Expo
+- ✅ New Architecture (Fabric/TurboModules)
+
+## 🎯 Performance
 
 - **Bundle Size**: ~3KB gzipped
-- **Processing Time**: <1ms per check
+- **Processing Time**: <1ms per validation
 - **Memory**: Minimal overhead
-- **Battery**: No impact (no network calls)
+- **Dependencies**: Zero
 
-## Contributing
+## 🤝 Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and guidelines.
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
-## License
+```bash
+# Clone the repo
+git clone https://github.com/anivar/react-native-email-autocorrect.git
+
+# Install dependencies
+npm install
+
+# Run tests
+npm test
+
+# Build
+npm run build
+```
+
+## 📄 License
 
 MIT © [Anivar Aravind](https://github.com/anivar)
 
-## Support
+## 🙏 Support
 
-- 🐛 [Report bugs](https://github.com/anivar/react-native-email-autocorrect/issues)
-- 💡 [Request features](https://github.com/anivar/react-native-email-autocorrect/issues)
-- 📖 [Read docs](https://github.com/anivar/react-native-email-autocorrect#readme)
+If you find this library helpful, please consider:
+
+- ⭐ Starring the repo
+- 🐛 [Reporting bugs](https://github.com/anivar/react-native-email-autocorrect/issues)
+- 💡 [Suggesting features](https://github.com/anivar/react-native-email-autocorrect/issues)
+- ☕ [Buying me a coffee](https://www.buymeacoffee.com/anivar)
+
+---
+
+<p align="center">
+  Made with ❤️ by <a href="https://github.com/anivar">Anivar Aravind</a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/anivar/react-native-email-autocorrect">
+    <img src="https://img.shields.io/github/stars/anivar/react-native-email-autocorrect?style=social" alt="GitHub stars">
+  </a>
+</p>
