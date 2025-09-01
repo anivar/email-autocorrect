@@ -42,8 +42,6 @@ export const EmailInput: React.FC<EmailInputProps & Omit<TextInputProps, 'value'
   } = useEmailAutocorrect(config);
 
   const inputRef = useRef<TextInput>(null);
-  const acceptButtonRef = useRef<TouchableOpacity>(null);
-  const rejectButtonRef = useRef<TouchableOpacity>(null);
   const previousSuggestionRef = useRef<string | null>(null);
 
   // Announce suggestions to screen readers
@@ -159,7 +157,6 @@ export const EmailInput: React.FC<EmailInputProps & Omit<TextInputProps, 'value'
             accessible={false}
           >
             <TouchableOpacity
-              ref={acceptButtonRef}
               onPress={handleAcceptSuggestion}
               style={[styles.suggestionButton, styles.acceptButton]}
               testID={`${testID}-accept`}
@@ -174,7 +171,6 @@ export const EmailInput: React.FC<EmailInputProps & Omit<TextInputProps, 'value'
               <Text style={styles.acceptButtonText} importantForAccessibility="no">Yes</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              ref={rejectButtonRef}
               onPress={handleRejectSuggestion}
               style={[styles.suggestionButton, styles.rejectButton]}
               testID={`${testID}-reject`}
