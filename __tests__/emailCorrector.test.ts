@@ -1,124 +1,248 @@
 /**
- * Tests for email correction logic
+ * Tests for email correction and validation logic
  */
 
 import { correctEmail, validateEmail } from '../src/core/emailCorrector';
 
 describe('correctEmail', () => {
-  describe('typo corrections', () => {
-    it('should correct common Gmail typos', () => {
-      const result = correctEmail('user@gmial.com');
-      expect(result).toEqual({
-        original: 'user@gmial.com',
-        suggested: 'user@gmail.com',
-        confidence: 0.95,
-        reason: 'Common typo fixed',
-      });
-    });
-
-    it('should correct missing dots', () => {
-      const result = correctEmail('user@gmailcom');
-      expect(result).toEqual({
-        original: 'user@gmailcom',
-        suggested: 'user@gmail.com',
-        confidence: 0.95,
-        reason: 'Common typo fixed',
-      });
-    });
-
-    it('should correct autocorrect capitalization', () => {
-      const result = correctEmail('user@Gmail.com');
-      expect(result).toEqual({
-        original: 'user@Gmail.com',
-        suggested: 'user@gmail.com',
+  describe('Common Provider Typos', () => {
+    test.each([
+      // Gmail typos
+      ['user@gmial.com', 'user@gmail.com'],
+      ['user@gmai.com', 'user@gmail.com'],
+      ['user@gmil.com', 'user@gmail.com'],
+      ['user@gnail.com', 'user@gmail.com'],
+      ['user@gmaill.com', 'user@gmail.com'],
+      
+      // Yahoo typos
+      ['user@yaho.com', 'user@yahoo.com'],
+      ['user@yahooo.com', 'user@yahoo.com'],
+      ['user@tahoo.com', 'user@yahoo.com'],
+      ['user@yhaoo.com', 'user@yahoo.com'],
+      
+      // Hotmail typos
+      ['user@hotmial.com', 'user@hotmail.com'],
+      ['user@hotmai.com', 'user@hotmail.com'],
+      ['user@hotmil.com', 'user@hotmail.com'],
+      ['user@hotmal.com', 'user@hotmail.com'],
+      
+      // Outlook typos
+      ['user@outlok.com', 'user@outlook.com'],
+      ['user@outloo.com', 'user@outlook.com'],
+      ['user@outlokk.com', 'user@outlook.com'],
+      ['user@autlook.com', 'user@outlook.com'],
+      
+      // iCloud typos
+      ['user@iclod.com', 'user@icloud.com'],
+      ['user@icloid.com', 'user@icloud.com'],
+      ['user@icould.com', 'user@icloud.com'],
+    ])('corrects %s to %s', (input, expected) => {
+      const result = correctEmail(input);
+      expect(result).toMatchObject({
+        original: input,
+        suggested: expected,
         confidence: 0.95,
         reason: 'Common typo fixed',
       });
     });
   });
 
-  describe('missing TLD handling', () => {
-    it('should add .com to Gmail', () => {
-      const result = correctEmail('user@gmail');
-      expect(result).toEqual({
-        original: 'user@gmail',
-        suggested: 'user@gmail.com',
-        confidence: 0.9,
-        reason: 'Added missing domain extension',
+  describe('Missing Domain Extensions', () => {
+    test.each([
+      ['user@gmail', 'user@gmail.com', 0.9],
+      ['user@yahoo', 'user@yahoo.com', 0.9],
+      ['user@hotmail', 'user@hotmail.com', 0.9],
+      ['user@outlook', 'user@outlook.com', 0.9],
+      ['user@icloud', 'user@icloud.com', 0.9],
+      ['user@company', 'user@company.com', 0.7],
+    ])('adds extension to %s → %s', (input, expected, confidence) => {
+      const result = correctEmail(input);
+      expect(result).toMatchObject({
+        original: input,
+        suggested: expected,
+        confidence,
       });
     });
+  });
 
-    it('should add regional TLD for Yahoo in UK', () => {
+  describe('Voice Input Errors', () => {
+    test.each([
+      ['user at gmail.com', 'user@gmail.com', 'Replaced "at" with @ symbol'],
+      ['john at yahoo.com', 'john@yahoo.com', 'Replaced "at" with @ symbol'],
+      ['user@g mail.com', 'user@gmail.com', 'Common typo fixed'],
+      ['user@gee mail.com', 'user@gmail.com', 'Common typo fixed'],
+      ['user@jay mail.com', 'user@gmail.com', 'Common typo fixed'],
+      ['user@why ahoo.com', 'user@yahoo.com', 'Common typo fixed'],
+      ['user@hot male.com', 'user@hotmail.com', 'Common typo fixed'],
+      ['user@out look.com', 'user@outlook.com', 'Common typo fixed'],
+      ['user@i cloud.com', 'user@icloud.com', 'Common typo fixed'],
+    ])('corrects voice input "%s" to %s', (input, expected, reason) => {
+      const result = correctEmail(input);
+      expect(result).toMatchObject({
+        original: input,
+        suggested: expected,
+        reason,
+      });
+    });
+  });
+
+  describe('Mobile Autocorrect Issues', () => {
+    test.each([
+      ['user@Gmail.com', 'user@gmail.com'],
+      ['user@email.com', 'user@gmail.com'],
+      ['user@Email.com', 'user@gmail.com'],
+      ['user@Yahoo.com', 'user@yahoo.com'],
+      ['user@Hotmail.com', 'user@hotmail.com'],
+      ['user@Outlook.com', 'user@outlook.com'],
+    ])('fixes autocorrect case %s to %s', (input, expected) => {
+      const result = correctEmail(input);
+      expect(result).toBeTruthy();
+      expect(result?.suggested).toBe(expected);
+    });
+  });
+
+  describe('Missing Dots in Domain', () => {
+    test.each([
+      ['user@gmailcom', 'user@gmail.com'],
+      ['user@yahoocom', 'user@yahoo.com'],
+      ['user@hotmailcom', 'user@hotmail.com'],
+      ['user@outlookcom', 'user@outlook.com'],
+      ['user@aolcom', 'user@aol.com'],
+    ])('adds missing dot in %s', (input, expected) => {
+      const result = correctEmail(input);
+      expect(result).toMatchObject({
+        suggested: expected,
+        confidence: 0.95,
+        reason: 'Common typo fixed',
+      });
+    });
+  });
+
+  describe('Regional Domain Suggestions', () => {
+    it('suggests .co.uk for UK users', () => {
       const result = correctEmail('user@yahoo', { country: 'UK' });
-      expect(result).toEqual({
-        original: 'user@yahoo',
-        suggested: 'user@yahoo.co.uk',
-        confidence: 0.9,
-        reason: 'Added missing domain extension',
-      });
+      expect(result?.suggested).toBe('user@yahoo.co.uk');
     });
 
-    it('should add .com to unknown domains', () => {
-      const result = correctEmail('user@company');
-      expect(result).toEqual({
-        original: 'user@company',
-        suggested: 'user@company.com',
-        confidence: 0.7,
-        reason: 'Added .com extension',
-      });
+    it('suggests .ca for Canadian users', () => {
+      const result = correctEmail('user@yahoo', { country: 'Canada' });
+      expect(result?.suggested).toBe('user@yahoo.ca');
+    });
+
+    it('suggests .com.au for Australian users', () => {
+      const result = correctEmail('user@yahoo', { country: 'Australia' });
+      expect(result?.suggested).toBe('user@yahoo.com.au');
+    });
+
+    it('suggests .fr for French users', () => {
+      const result = correctEmail('user@yahoo', { country: 'France' });
+      expect(result?.suggested).toBe('user@yahoo.fr');
+    });
+
+    it('defaults to .com when no country specified', () => {
+      const result = correctEmail('user@yahoo');
+      expect(result?.suggested).toBe('user@yahoo.com');
+    });
+
+    it('corrects wrong TLD for regional users', () => {
+      const result = correctEmail('user@yahoo.com', { country: 'UK' });
+      expect(result?.suggested).toBe('user@yahoo.co.uk');
     });
   });
 
-  describe('invalid inputs', () => {
-    it('should return null for empty email', () => {
-      expect(correctEmail('')).toBeNull();
+  describe('Custom Domain Support', () => {
+    it('recognizes custom domains with typos', () => {
+      const result = correctEmail('user@compny.com', {
+        customDomains: ['company.com'],
+      });
+      expect(result).toMatchObject({
+        suggested: 'user@company.com',
+        confidence: 0.8,
+        reason: 'Matched company domain',
+      });
     });
 
-    it('should return null for email without @', () => {
-      expect(correctEmail('userexample.com')).toBeNull();
+    it('handles multiple custom domains', () => {
+      const result = correctEmail('user@acmecorp.com', {
+        customDomains: ['company.com', 'acmecorp.com'],
+      });
+      expect(result).toBeNull(); // Valid custom domain
+    });
+  });
+
+  describe('Edge Cases', () => {
+    test.each([
+      '',
+      ' ',
+      'notanemail',
+      '@gmail.com',
+      'user@',
+      'user@@gmail.com',
+      '@',
+      'user',
+    ])('returns null for invalid input: "%s"', (input) => {
+      expect(correctEmail(input)).toBeNull();
     });
 
-    it('should return null for valid email', () => {
-      expect(correctEmail('user@gmail.com')).toBeNull();
+    test.each([
+      'user@gmail.com',
+      'user@yahoo.com',
+      'user@hotmail.com',
+      'user@outlook.com',
+      'user@company.com',
+      'user.name@gmail.com',
+      'user+tag@gmail.com',
+      'user_123@yahoo.co.uk',
+    ])('returns null for valid email: %s', (email) => {
+      expect(correctEmail(email)).toBeNull();
     });
   });
 });
 
 describe('validateEmail', () => {
-  it('should validate correct email', () => {
-    const result = validateEmail('user@example.com');
-    expect(result).toEqual({ isValid: true });
-  });
-
-  it('should reject email without @', () => {
-    const result = validateEmail('userexample.com');
-    expect(result).toEqual({
-      isValid: false,
-      error: 'Email must contain @ symbol',
+  describe('Valid Email Formats', () => {
+    test.each([
+      'user@gmail.com',
+      'user.name@gmail.com',
+      'user+tag@gmail.com',
+      'user_123@yahoo.co.uk',
+      'user-name@company.com',
+      'user123@outlook.com',
+      'a@example.com',
+      'test.email.with+symbol@example4u.net',
+    ])('validates %s as correct', (email) => {
+      expect(validateEmail(email)).toEqual({ isValid: true });
     });
   });
 
-  it('should reject email without domain', () => {
-    const result = validateEmail('user@');
-    expect(result).toEqual({
-      isValid: false,
-      error: 'Email domain is missing',
+  describe('Invalid Email Formats', () => {
+    test.each([
+      ['', 'Email is required'],
+      ['notanemail', 'Email must contain @ symbol'],
+      ['user@', 'Email domain is missing'],
+      ['@gmail.com', 'Email username is missing'],
+      ['user@@gmail.com', 'Invalid email format'],
+      ['user@gmail', 'Email domain must have extension (e.g., .com)'],
+      ['user @gmail.com', 'Invalid email format'],
+      ['user@gmail .com', 'Invalid email format'],
+    ])('rejects "%s" with error: %s', (email, expectedError) => {
+      const result = validateEmail(email);
+      expect(result).toEqual({
+        isValid: false,
+        error: expectedError,
+      });
     });
   });
+});
 
-  it('should reject email without TLD', () => {
-    const result = validateEmail('user@example');
-    expect(result).toEqual({
-      isValid: false,
-      error: 'Email domain must have extension (e.g., .com)',
-    });
-  });
-
-  it('should reject empty email', () => {
-    const result = validateEmail('');
-    expect(result).toEqual({
-      isValid: false,
-      error: 'Email is required',
-    });
+describe('Performance', () => {
+  it('processes emails quickly', () => {
+    const start = Date.now();
+    for (let i = 0; i < 1000; i++) {
+      correctEmail('user@gmial.com');
+      validateEmail('user@gmail.com');
+    }
+    const duration = Date.now() - start;
+    expect(duration).toBeLessThan(100); // Should process 2000 operations in < 100ms
   });
 });

@@ -2,15 +2,10 @@
 
 [![npm version](https://img.shields.io/npm/v/react-native-email-autocorrect.svg)](https://www.npmjs.com/package/react-native-email-autocorrect)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![CI](https://github.com/anivar/react-native-email-autocorrect/actions/workflows/ci.yml/badge.svg)](https://github.com/anivar/react-native-email-autocorrect/actions/workflows/ci.yml)
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/react-native-email-autocorrect)](https://bundlephobia.com/package/react-native-email-autocorrect)
 [![New Architecture](https://img.shields.io/badge/New%20Architecture-Compatible-brightgreen)](https://reactnative.dev/docs/the-new-architecture/landing-page)
 
 > Smart email validation and typo correction for React Native. Reduce support tickets and improve user experience with intelligent email suggestions.
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/anivar/react-native-email-autocorrect/main/demo.gif" alt="Demo" width="300">
-</p>
 
 ## ✨ Features
 
