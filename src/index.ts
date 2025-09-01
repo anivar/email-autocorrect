@@ -18,6 +18,7 @@ export { useEmailAutocorrect } from './hooks/useEmailAutocorrect';
 
 // React components
 export { EmailInput } from './components/EmailInput';
+export { EmailInputInline } from './components/EmailInputInline';
 
 // Types
 export type { 

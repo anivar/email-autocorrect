@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    "declarationOnly": true,
+    "emitDeclarationOnly": true,
+    "outDir": "./lib/typescript"
+  }
+}

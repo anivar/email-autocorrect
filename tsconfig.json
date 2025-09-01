@@ -5,7 +5,6 @@
     "lib": ["ES2018"],
     "jsx": "react-native",
     "declaration": true,
-    "outDir": "./lib",
     "rootDir": "./src",
     "strict": true,
     "esModuleInterop": true,
