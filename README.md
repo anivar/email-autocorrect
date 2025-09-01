@@ -1,6 +1,5 @@
 # React Native Email Autocorrect
 
-[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](package.json)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](src/)
 
@@ -9,12 +8,13 @@
 ## ✨ Features
 
 - **🧠 Intelligent Algorithms**: Uses Levenshtein distance, keyboard layout awareness, and pattern matching
-- **🌍 Global Support**: 200+ TLD and ccTLD domains with IETF compliance
+- **🌍 Global Support**: 100+ TLD and ccTLD domains with IANA dynamic loading
 - **🔤 Unicode Support**: EAI standards (RFC 6530-6533) for international email addresses
-- **📊 Frequency-based**: Gmail gets priority (43% market share), Yahoo (8%), Outlook (5%)
-- **⚡ High Performance**: <0.001ms per correction, 1.1M+ corrections/second
-- **🎯 Smart Validation**: Prevents correcting valid emails to invalid ones
-- **🔧 React Integration**: Ready-to-use React Native hook
+- **📊 Frequency-based**: Gmail gets priority (43% market share), Yahoo (8%), Outlook (9%)
+- **⚡ Instant Suggestions**: Zero-latency corrections with 0ms debounce by default
+- **🎤 Voice Input**: Converts "at" to "@" from voice dictation
+- **🎯 Smart Validation**: Domain-only corrections, preserves username exactly
+- **🔧 React Integration**: Ready-to-use React Native hook with instant feedback
 - **🚀 Zero Dependencies**: Pure TypeScript, no native modules needed
 
 ## 📦 Installation
@@ -118,13 +118,19 @@ if (suggestion) {
 const validation = validateEmail('用户@测试.中国');
 console.log(validation.isValid); // true
 
+// Load additional TLDs from IANA
+import { loadTLDs } from 'react-native-email-autocorrect';
+await loadTLDs(); // Loads latest TLD list
+
 // Test specific cases
 const testCases = [
   'user@company.com',    // ✅ Valid business domain
-  'ping@gmx.de',         // ✅ Valid German provider  
+  'info@gmx.de',         // ✅ Valid German provider  
   'user@example.co.in',  // ✅ Valid Indian ccTLD
-  'ping@gmial.com',      // ➡️ Corrected to gmail.com
-  'ping@yahoo.cmo'       // ➡️ Corrected to yahoo.com
+  'test@gmial.com',      // ➡️ Corrected to gmail.com
+  'info@yahoo.cmo',      // ➡️ Corrected to yahoo.com
+  'user at gmail.com',   // ➡️ Voice input correction
+  '测试@example.中国',    // ✅ Unicode domain support
 ];
 
 testCases.forEach(email => {
@@ -166,9 +172,9 @@ john@yahoo (France) → john@yahoo.fr
 
 ### Voice Input Errors
 ```
-g mail.com    → gmail.com
-at gmail.com  → @gmail.com
-gee mail      → gmail.com
+john at gmail.com     → john@gmail.com
+user AT yahoo.com     → user@yahoo.com
+test  at  company.io  → test@company.io
 ```
 
 ## ⚙️ Configuration
@@ -182,7 +188,7 @@ const config = {
   // Customize behavior
   country: 'UK',              // For regional domains
   minConfidence: 0.7,         // Minimum confidence threshold
-  debounceMs: 300,            // Debounce delay
+  debounceMs: 0,              // Instant suggestions (default)
   
   // Custom domains
   customDomains: ['company.com', 'corporate.org']
@@ -350,9 +356,9 @@ Works with:
 
 ## 🎯 Performance
 
-- **Bundle Size**: ~3KB gzipped
-- **Processing Time**: <1ms per validation
-- **Memory**: Minimal overhead
+- **Bundle Size**: ~20KB minified (48KB source)
+- **Processing Time**: <1ms per correction
+- **Memory**: Minimal overhead with smart caching
 - **Dependencies**: Zero
 
 ## 🤝 Contributing
