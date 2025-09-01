@@ -1,0 +1,41 @@
+# Keep source for debugging
+# src/
+tsconfig.json
+tsconfig.*.json
+
+# Development
+.gitignore
+.eslintrc*
+.prettierrc*
+jest.config.js
+babel.config.js
+
+# Testing
+__tests__/
+__mocks__/
+coverage/
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+
+# Examples and docs
+example/
+examples/
+docs/
+demo/
+*.md
+!README.md
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
