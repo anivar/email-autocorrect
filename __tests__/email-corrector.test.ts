@@ -2,7 +2,7 @@
  * Tests for email correction and validation logic
  */
 
-import { correctEmail, validateEmail } from '../src/core/emailCorrector';
+import { correctEmail, validateEmail } from '../src/core/email-corrector';
 
 describe('correctEmail', () => {
   describe('Common Provider Typos', () => {
