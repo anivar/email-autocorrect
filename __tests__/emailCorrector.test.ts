@@ -36,6 +36,16 @@ describe('correctEmail', () => {
       ['user@iclod.com', 'user@icloud.com'],
       ['user@icloid.com', 'user@icloud.com'],
       ['user@icould.com', 'user@icloud.com'],
+      
+      // Typing race conditions (fast typing errors)
+      ['user@gamil.com', 'user@gmail.com'],
+      ['user@gmail.ocm', 'user@gmail.com'],
+      ['user@gmail.cmo', 'user@gmail.com'],
+      ['user@gmali.com', 'user@gmail.com'],
+      ['user@yahoo.ocm', 'user@yahoo.com'],
+      ['user@yaaho.com', 'user@yahoo.com'],
+      ['user@hotmail.ocm', 'user@hotmail.com'],
+      ['user@hotamil.com', 'user@hotmail.com'],
     ])('corrects %s to %s', (input, expected) => {
       const result = correctEmail(input);
       expect(result).toMatchObject({

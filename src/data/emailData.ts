@@ -12,13 +12,21 @@ export const TYPO_FIXES: Record<string, string> = {
   'aolcom': 'aol.com',
   'icloudcom': 'icloud.com',
   
-  // Character typos
+  // Character typos and typing race conditions
   'gmial.com': 'gmail.com',
   'gmai.com': 'gmail.com',
   'gmil.com': 'gmail.com',
   'gnail.com': 'gmail.com',
   'gmaill.com': 'gmail.com',
   'gmal.com': 'gmail.com',
+  'gamil.com': 'gmail.com',
+  'gmali.com': 'gmail.com',
+  'gmail.ocm': 'gmail.com',
+  'gmail.cmo': 'gmail.com',
+  'gmail.vom': 'gmail.com',
+  'gmail.xom': 'gmail.com',
+  'gmaul.com': 'gmail.com',
+  'gmeal.com': 'gmail.com',
   
   'yaho.com': 'yahoo.com',
   'yahooo.com': 'yahoo.com',
@@ -26,12 +34,20 @@ export const TYPO_FIXES: Record<string, string> = {
   'tahoo.com': 'yahoo.com',
   'uahoo.com': 'yahoo.com',
   'yhaoo.com': 'yahoo.com',
+  'yahoo.ocm': 'yahoo.com',
+  'yahoo.cmo': 'yahoo.com',
+  'yaaho.com': 'yahoo.com',
+  'yaoho.com': 'yahoo.com',
   
   'hotmial.com': 'hotmail.com',
   'hotmai.com': 'hotmail.com',
   'hotmil.com': 'hotmail.com',
   'hotmal.com': 'hotmail.com',
   'hotmeil.com': 'hotmail.com',
+  'hotmail.ocm': 'hotmail.com',
+  'hotmail.cmo': 'hotmail.com',
+  'hotamil.com': 'hotmail.com',
+  'hotnail.com': 'hotmail.com',
   
   'outlok.com': 'outlook.com',
   'outloo.com': 'outlook.com',
