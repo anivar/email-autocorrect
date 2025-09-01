@@ -12,13 +12,13 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { EmailSuggestion, ValidationResult, EmailAutocorrectConfig } from '../types';
-import { correctEmail, validateEmail } from '../core/emailCorrector';
+import { correctEmail, validateEmail } from '../core/email-corrector';
 
 export function useEmailAutocorrect(config: EmailAutocorrectConfig = {}) {
   const {
     enableSuggestions = true,
     enableValidation = true,
-    debounceMs = 300,
+    debounceMs = 0,  // Default to instant suggestions
     minConfidence = 0.7,
   } = config;
   
@@ -36,12 +36,32 @@ export function useEmailAutocorrect(config: EmailAutocorrectConfig = {}) {
       return;
     }
     
-    // Clear existing timer
+    // Instant suggestions (no debounce) for client-side data
+    if (debounceMs === 0) {
+      // Validate
+      if (enableValidation) {
+        const validationResult = validateEmail(email);
+        setValidation(validationResult);
+      }
+      
+      // Get suggestions instantly
+      if (enableSuggestions) {
+        const correctionResult = correctEmail(email, config);
+        if (correctionResult && correctionResult.confidence >= minConfidence) {
+          setSuggestion(correctionResult);
+        } else {
+          setSuggestion(null);
+        }
+      }
+      
+      return;
+    }
+    
+    // Optional debouncing (if explicitly requested)
     if (debounceTimerRef.current) {
       clearTimeout(debounceTimerRef.current);
     }
     
-    // Set new timer
     debounceTimerRef.current = setTimeout(() => {
       setIsChecking(true);
       
