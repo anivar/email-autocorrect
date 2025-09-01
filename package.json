@@ -1,6 +1,6 @@
 {
   "name": "react-native-email-autocorrect",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Intelligent email typo correction for React Native with global TLD support, EAI standards, and instant suggestions",
   "main": "lib/commonjs/index.js",
   "module": "lib/module/index.js",
