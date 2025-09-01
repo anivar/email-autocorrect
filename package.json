@@ -1,7 +1,7 @@
 {
   "name": "react-native-email-autocorrect",
-  "version": "1.0.0",
-  "description": "Smart email validation and autocorrection for React Native",
+  "version": "2.0.0",
+  "description": "Intelligent email typo correction for React Native with global TLD support, EAI standards, and instant suggestions",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -20,7 +20,14 @@
     "typo",
     "correction",
     "mobile",
-    "form"
+    "form",
+    "international",
+    "unicode",
+    "eai",
+    "idn",
+    "levenshtein",
+    "instant-suggestions",
+    "voice-input"
   ],
   "author": "Anivar Aravind <ping@anivar.net>",
   "license": "MIT",
