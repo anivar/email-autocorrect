@@ -76,7 +76,7 @@ export class EmailCorrector {
       const cached = this.cache.get(cacheKey);
       return cached ? {
         original: email,
-        suggested: `${username}@${cached.domain}`,
+        suggested: `${username}@${cached.suggested.split('@')[1]}`,
         confidence: cached.confidence,
         reason: cached.reason
       } : null;
@@ -85,15 +85,20 @@ export class EmailCorrector {
     // Expensive path: Domain suggestion
     const suggestion = this.suggestDomain(domainLower, config);
     
-    // Cache the domain suggestion (not the full email)
-    this.cache.set(cacheKey, suggestion);
+    if (suggestion) {
+      const result = {
+        original: email,
+        suggested: `${username}@${suggestion.domain}`,
+        confidence: suggestion.confidence,
+        reason: suggestion.reason
+      };
+      // Cache the full result
+      this.cache.set(cacheKey, result);
+      return result;
+    }
     
-    return suggestion ? {
-      original: email,
-      suggested: `${username}@${suggestion.domain}`,
-      confidence: suggestion.confidence,
-      reason: suggestion.reason
-    } : null;
+    this.cache.set(cacheKey, null);
+    return null;
   }
 
   validate(email: string): ValidationResult {
