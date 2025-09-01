@@ -30,20 +30,41 @@ export function correctEmail(
   config: EmailAutocorrectConfig = {}
 ): EmailSuggestion | null {
   // Early return for invalid input
-  if (!email || !email.includes('@')) return null;
+  if (!email) return null;
+  
+  // Handle voice input "at" → "@" replacement
+  let processedEmail = email.toLowerCase().trim();
+  let atReplaced = false;
+  if (processedEmail.includes(' at ') && !processedEmail.includes('@')) {
+    processedEmail = processedEmail.replace(' at ', '@');
+    atReplaced = true;
+  }
+  
+  if (!processedEmail.includes('@')) return null;
   
   // Parse email into username and domain parts
-  const parts = email.toLowerCase().trim().split('@');
+  const parts = processedEmail.split('@');
   if (parts.length !== 2) return null;
   
   const [username, domain] = parts;
   if (!username || !domain) return null;
   
-  // Check direct typo fixes
-  if (TYPO_FIXES[domain]) {
+  // If we only replaced "at" and the rest is valid, return that suggestion
+  if (atReplaced && EMAIL_REGEX.test(processedEmail)) {
     return {
       original: email,
-      suggested: `${username}@${TYPO_FIXES[domain]}`,
+      suggested: processedEmail,
+      confidence: 0.9,
+      reason: 'Replaced "at" with @ symbol'
+    };
+  }
+  
+  // Check direct typo fixes
+  if (TYPO_FIXES[domain]) {
+    const suggested = `${username}@${TYPO_FIXES[domain]}`;
+    return {
+      original: email,
+      suggested: atReplaced ? suggested : suggested,
       confidence: 0.95,
       reason: 'Common typo fixed'
     };

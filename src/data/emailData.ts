@@ -62,6 +62,10 @@ export const TYPO_FIXES: Record<string, string> = {
   'gee mail.com': 'gmail.com',
   'jay mail.com': 'gmail.com',
   'why ahoo.com': 'yahoo.com',
+  'hot male.com': 'hotmail.com',
+  'out look.com': 'outlook.com',
+  'i cloud.com': 'icloud.com',
+  'a o l.com': 'aol.com',
 };
 
 // Provider rules - which TLDs are valid for each provider

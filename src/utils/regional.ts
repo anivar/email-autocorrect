@@ -78,30 +78,3 @@ export function getRegionalTLD(provider: string, country?: string): string {
   // Fall back to the first valid TLD for this provider
   return PROVIDER_RULES[provider][0];
 }
-
-export function detectCountryFromLocale(): string {
-  if (typeof navigator !== 'undefined' && navigator.language) {
-    const locale = navigator.language;
-    
-    // Map locale codes to countries
-    const localeMap: Record<string, string> = {
-      'en-GB': 'UK',
-      'en-UK': 'UK',
-      'en-CA': 'Canada',
-      'en-AU': 'Australia',
-      'en-NZ': 'New Zealand',
-      'en-IE': 'Ireland',
-      'en-IN': 'India',
-      'fr-FR': 'France',
-      'es-ES': 'Spain',
-      'de-DE': 'Germany',
-      'it-IT': 'Italy',
-      'pt-BR': 'Brazil',
-      'ja-JP': 'Japan',
-    };
-    
-    return localeMap[locale] || 'USA';
-  }
-  
-  return 'USA';
-}
