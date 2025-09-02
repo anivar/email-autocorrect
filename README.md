@@ -21,7 +21,7 @@ Intelligent email typo correction for React Native, React, and Next.js. Zero dep
 - **🎤 Voice Ready** - Converts "at" to "@" from speech-to-text
 - **♿ Accessible** - Screen reader support, keyboard navigation
 - **🌳 Tree-Shakeable** - Import only what you need
-- **📦 Tiny** - ~15KB minified, zero dependencies
+- **📦 Tiny** - ~10KB minified + gzipped, zero dependencies
 
 ## Installation
 
