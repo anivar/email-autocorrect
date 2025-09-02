@@ -1,7 +1,7 @@
 {
-  "name": "react-native-email-autocorrect",
-  "version": "2.0.1",
-  "description": "Intelligent email typo correction for React Native with global TLD support, EAI standards, and instant suggestions",
+  "name": "email-autocorrect",
+  "version": "2.1.0",
+  "description": "Universal email typo correction for React Native, React, and Next.js. Zero dependencies, accessible, works everywhere",
   "main": "lib/commonjs/index.js",
   "module": "lib/module/index.js",
   "types": "lib/typescript/index.d.ts",
@@ -25,35 +25,49 @@
     "prepublishOnly": "npm run clean && npm run build"
   },
   "keywords": [
+    "react",
     "react-native",
+    "nextjs",
+    "next",
     "email",
     "validation",
     "autocorrect",
     "typo",
     "correction",
+    "web",
+    "universal",
     "mobile",
     "form",
     "international",
     "unicode",
     "eai",
     "idn",
+    "accessibility",
+    "wcag",
+    "aria",
     "levenshtein",
     "instant-suggestions",
-    "voice-input"
+    "voice-input",
+    "tree-shakeable",
+    "zero-dependencies"
   ],
   "author": "Anivar Aravind <ping@anivar.net>",
   "license": "MIT",
-  "homepage": "https://github.com/anivar/react-native-email-autocorrect#readme",
+  "homepage": "https://github.com/anivar/email-autocorrect#readme",
   "bugs": {
-    "url": "https://github.com/anivar/react-native-email-autocorrect/issues"
+    "url": "https://github.com/anivar/email-autocorrect/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/anivar/react-native-email-autocorrect.git"
+    "url": "git+https://github.com/anivar/email-autocorrect.git"
   },
   "peerDependencies": {
-    "react": ">=18.0.0",
-    "react-native": ">=0.70.0"
+    "react": ">=16.8.0"
+  },
+  "peerDependenciesMeta": {
+    "react-native": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",

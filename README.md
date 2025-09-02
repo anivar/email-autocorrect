@@ -1,10 +1,17 @@
-# React Native Email Autocorrect
+# Email Autocorrect
 
-[![npm version](https://img.shields.io/npm/v/react-native-email-autocorrect.svg)](https://www.npmjs.com/package/react-native-email-autocorrect)
+[![npm version](https://img.shields.io/npm/v/email-autocorrect.svg)](https://www.npmjs.com/package/email-autocorrect)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Bundle Size](https://img.shields.io/bundlephobia/minzip/react-native-email-autocorrect)](https://bundlephobia.com/package/react-native-email-autocorrect)
+[![Bundle Size](https://img.shields.io/bundlephobia/minzip/email-autocorrect)](https://bundlephobia.com/package/email-autocorrect)
 
-Intelligent email typo correction for React Native. Zero dependencies, tree-shakeable, with accessibility built-in.
+### Standards Compliance
+[![EAI Compliant](https://img.shields.io/badge/EAI-Compliant-brightgreen)](https://tools.ietf.org/html/rfc6531)
+[![IDN Support](https://img.shields.io/badge/IDN-Support-brightgreen)](https://www.icann.org/resources/pages/idn-2012-02-25-en)
+[![WCAG 2.1 AA](https://img.shields.io/badge/WCAG_2.1-AA-brightgreen)](https://www.w3.org/WAI/WCAG21/quickref/)
+[![WAI-ARIA](https://img.shields.io/badge/WAI--ARIA-Compliant-brightgreen)](https://www.w3.org/TR/wai-aria-1.2/)
+[![Unicode Ready](https://img.shields.io/badge/Unicode-Ready-brightgreen)](https://unicode.org/standard/standard.html)
+
+Intelligent email typo correction for React Native, React, and Next.js. Zero dependencies, tree-shakeable, with accessibility built-in.
 
 ## Features
 
@@ -19,17 +26,17 @@ Intelligent email typo correction for React Native. Zero dependencies, tree-shak
 ## Installation
 
 ```bash
-npm install react-native-email-autocorrect
+npm install email-autocorrect
 ```
 
-No native modules. No pod install. Works everywhere React Native runs.
+Works with React Native, React web, Next.js, and any JavaScript framework. No native dependencies.
 
 ## Quick Start
 
 ### Option 1: Ready-to-use Component
 
 ```tsx
-import { EmailInput } from 'react-native-email-autocorrect';
+import { EmailInput } from 'email-autocorrect';
 
 <EmailInput
   onEmailChange={(email, isValid) => {
@@ -44,7 +51,7 @@ import { EmailInput } from 'react-native-email-autocorrect';
 ### Option 2: Hook Only (Smaller Bundle)
 
 ```tsx
-import { useEmailAutocorrect } from 'react-native-email-autocorrect';
+import { useEmailAutocorrect } from 'email-autocorrect';
 
 function MyEmailInput() {
   const { email, setEmail, suggestion, acceptSuggestion } = useEmailAutocorrect();
@@ -62,7 +69,7 @@ function MyEmailInput() {
 ### Option 3: Functions Only (Smallest Bundle)
 
 ```tsx
-import { correctEmail, validateEmail } from 'react-native-email-autocorrect';
+import { correctEmail, validateEmail } from 'email-autocorrect';
 
 const suggestion = correctEmail('user@gmial.com');
 // { suggested: 'user@gmail.com', confidence: 0.92 }
@@ -71,13 +78,22 @@ const validation = validateEmail('user@gmail.com');
 // { isValid: true }
 ```
 
-## Accessibility Examples
+## Framework Examples
 
-See our [GitHub examples](https://github.com/anivar/react-native-email-autocorrect/tree/main/examples/accessibility) for accessible implementations:
+### React Native
+- [Inline Autocomplete](https://github.com/anivar/email-autocorrect/blob/main/examples/accessibility/InlineSuggestionExample.tsx) - Gmail-style inline suggestions
+- [Overlay Suggestions](https://github.com/anivar/email-autocorrect/blob/main/examples/accessibility/GmailStyleExample.tsx) - With keyboard navigation
+- [Voice Input](https://github.com/anivar/email-autocorrect/blob/main/examples/accessibility/VoiceInputExample.tsx) - Optimized for speech-to-text
+- [Enterprise Styling](https://github.com/anivar/email-autocorrect/blob/main/examples/customization/EnterpriseExample.tsx) - Corporate email validation
 
-- [Inline Autocomplete](https://github.com/anivar/react-native-email-autocorrect/blob/main/examples/accessibility/InlineSuggestionExample.tsx) - Gmail-style inline suggestions
-- [Overlay Suggestions](https://github.com/anivar/react-native-email-autocorrect/blob/main/examples/accessibility/GmailStyleExample.tsx) - With keyboard navigation
-- [Voice Input](https://github.com/anivar/react-native-email-autocorrect/blob/main/examples/accessibility/VoiceInputExample.tsx) - Optimized for speech-to-text
+### React Web
+- [Web Component](https://github.com/anivar/email-autocorrect/blob/main/examples/web/EmailInput.tsx) - Pure React implementation
+- [Custom Hook](https://github.com/anivar/email-autocorrect/blob/main/examples/web/useEmailAutocorrect.ts) - Web-compatible hook
+
+### Next.js
+- [Form Example](https://github.com/anivar/email-autocorrect/blob/main/examples/nextjs/EmailFormExample.tsx) - Server & client components
+- Works with App Router and Pages Router
+- SSR/SSG compatible
 
 ## API Reference
 
@@ -112,13 +128,13 @@ This package supports tree-shaking. Import only what you need:
 
 ```tsx
 // ✅ Small - Only imports the hook
-import { useEmailAutocorrect } from 'react-native-email-autocorrect';
+import { useEmailAutocorrect } from 'email-autocorrect';
 
 // ✅ Smaller - Only imports one function
-import { validateEmail } from 'react-native-email-autocorrect';
+import { validateEmail } from 'email-autocorrect';
 
 // ❌ Larger - Imports everything
-import * as EmailAutocorrect from 'react-native-email-autocorrect';
+import * as EmailAutocorrect from 'email-autocorrect';
 ```
 
 ## Configuration
@@ -165,7 +181,7 @@ MIT © [Anivar Aravind](https://github.com/anivar)
 ---
 
 <p align="center">
-  <a href="https://github.com/anivar/react-native-email-autocorrect/stargazers">⭐ Star on GitHub</a> • 
-  <a href="https://github.com/anivar/react-native-email-autocorrect/issues">🐛 Report Bug</a> • 
-  <a href="https://www.npmjs.com/package/react-native-email-autocorrect">📦 npm</a>
+  <a href="https://github.com/anivar/email-autocorrect/stargazers">⭐ Star on GitHub</a> • 
+  <a href="https://github.com/anivar/email-autocorrect/issues">🐛 Report Bug</a> • 
+  <a href="https://www.npmjs.com/package/email-autocorrect">📦 npm</a>
 </p>

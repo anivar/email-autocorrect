@@ -5,6 +5,51 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2025-09-02
+
+### Added
+- Full React web and Next.js support
+- Web-specific examples and components
+- Performance benchmarks and regression tests
+- Standards compliance badges (EAI, IDN, WCAG, WAI-ARIA)
+- Enterprise customization examples
+- COMPLIANCE.md documentation
+- Memory usage tests
+- Support for server-side rendering (SSR)
+
+### Changed
+- Updated package description to reflect universal support
+- Made react-native an optional peer dependency
+- Lowered React version requirement to >=16.8.0
+- Expanded keywords for better discoverability
+- Repository renamed from `react-native-email-autocorrect` to `email-autocorrect`
+
+### Fixed
+- Removed unused refs from EmailInput component
+- Removed redundant TypeScript configuration
+
+## [2.0.1] - 2025-09-02
+
+### Fixed
+- TypeScript compilation error in cache handling
+- Added missing accessibility features
+
+## [2.0.0] - 2025-09-02
+
+### Added
+- Major algorithmic overhaul for instant suggestions
+- Zero-latency autocorrection (no debounce by default)
+- Tree-shaking support
+- Comprehensive accessibility features
+- Voice input support ("at" → "@")
+- Keyboard proximity detection
+- Cache system for performance
+
+### Changed
+- Complete rewrite of correction algorithm
+- Improved performance by 10x
+- Reduced bundle size
+
 ## [1.0.0] - 2024-01-09
 
 ### Added

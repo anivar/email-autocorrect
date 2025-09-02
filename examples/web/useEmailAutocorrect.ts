@@ -1,0 +1,109 @@
+/**
+ * React hook for email autocorrection (Web version)
+ * Pure React implementation without React Native dependencies
+ */
+
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { EmailSuggestion, ValidationResult, EmailAutocorrectConfig } from '../types';
+import { correctEmail, validateEmail } from '../core/email-corrector';
+
+export function useEmailAutocorrect(config: EmailAutocorrectConfig = {}) {
+  const {
+    enableSuggestions = true,
+    enableValidation = true,
+    debounceMs = 0,
+    minConfidence = 0.7,
+  } = config;
+  
+  const [email, setEmail] = useState('');
+  const [validation, setValidation] = useState<ValidationResult>({ isValid: false });
+  const [suggestion, setSuggestion] = useState<EmailSuggestion | null>(null);
+  const [isChecking, setIsChecking] = useState(false);
+  
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout>>();
+
+  useEffect(() => {
+    if (!email) {
+      setValidation({ isValid: false });
+      setSuggestion(null);
+      return;
+    }
+    
+    // Instant suggestions (no debounce) for client-side data
+    if (debounceMs === 0) {
+      // Validate
+      if (enableValidation) {
+        const validationResult = validateEmail(email);
+        setValidation(validationResult);
+      }
+      
+      // Get suggestions instantly
+      if (enableSuggestions) {
+        const correctionResult = correctEmail(email, config);
+        if (correctionResult && correctionResult.confidence >= minConfidence) {
+          setSuggestion(correctionResult);
+        } else {
+          setSuggestion(null);
+        }
+      }
+      
+      return;
+    }
+    
+    // Optional debouncing (if explicitly requested)
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+    
+    debounceTimerRef.current = setTimeout(() => {
+      setIsChecking(true);
+      
+      // Validate
+      if (enableValidation) {
+        const validationResult = validateEmail(email);
+        setValidation(validationResult);
+      }
+      
+      // Get suggestions
+      if (enableSuggestions) {
+        const correctionResult = correctEmail(email, config);
+        if (correctionResult && correctionResult.confidence >= minConfidence) {
+          setSuggestion(correctionResult);
+        } else {
+          setSuggestion(null);
+        }
+      }
+      
+      setIsChecking(false);
+    }, debounceMs);
+    
+    // Cleanup
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, [email, enableValidation, enableSuggestions, config, minConfidence, debounceMs]);
+  
+  const acceptSuggestion = useCallback(() => {
+    if (suggestion) {
+      setEmail(suggestion.suggested);
+      setSuggestion(null);
+      setValidation({ isValid: true });
+    }
+  }, [suggestion]);
+  
+  const rejectSuggestion = useCallback(() => {
+    setSuggestion(null);
+  }, []);
+  
+  return {
+    email,
+    setEmail,
+    validation,
+    suggestion,
+    isChecking,
+    acceptSuggestion,
+    rejectSuggestion,
+  };
+}
