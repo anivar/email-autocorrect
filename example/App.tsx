@@ -1,5 +1,5 @@
 /**
- * Example app demonstrating react-native-email-autocorrect
+ * Example app demonstrating email-autocorrect
  */
 
 import React, { useState } from 'react';
@@ -8,11 +8,12 @@ import {
   ScrollView,
   View,
   Text,
+  TextInput,
   StyleSheet,
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import { EmailInput, useEmailAutocorrect } from 'react-native-email-autocorrect';
+import { EmailInput, useEmailAutocorrect } from 'email-autocorrect';
 
 const App = () => {
   const [submittedEmail, setSubmittedEmail] = useState('');
@@ -147,8 +148,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-
-// Fix missing import
-const TextInput = require('react-native').TextInput;
 
 export default App;

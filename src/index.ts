@@ -1,26 +1,23 @@
 /**
- * React Native Email Autocorrect
+ * Email Autocorrect
  * 
- * High-performance email typo correction and validation library
- * with full support for international domains (EAI/IDN)
+ * Unicode-first email validation and typo correction
+ * Full EAI/IDN support for global email addresses
  */
 
-// Core functions
+// ===== Primary Exports (Unicode/EAI Support) =====
 export { 
   correctEmail, 
   validateEmail, 
-  clearCache,
   loadTLDs 
 } from './core/email-corrector';
 
-// React hooks
+// ===== React Integration =====
 export { useEmailAutocorrect } from './hooks/useEmailAutocorrect';
-
-// React components
 export { EmailInput } from './components/EmailInput';
 export { EmailInputInline } from './components/EmailInputInline';
 
-// Types
+// ===== Types =====
 export type { 
   EmailSuggestion, 
   ValidationResult, 
@@ -28,5 +25,14 @@ export type {
   EmailInputProps 
 } from './types';
 
-// Direct access to core class (advanced usage)
+// ===== Optimized Variants =====
+// Latin character set version for tree-shaking optimization
+export {
+  validateEmailLatin,
+  correctEmailLatin,
+  processVoiceInputLatin
+} from './core/email-corrector-latin';
+
+// ===== Advanced Usage =====
 export { EmailCorrector } from './core/email-corrector';
+export { EmailCorrectorLatin } from './core/email-corrector-latin';

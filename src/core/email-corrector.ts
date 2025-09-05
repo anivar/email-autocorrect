@@ -9,7 +9,6 @@ import { calculateSimilarity } from '../utils/similarity';
 import { TLD_DATA, TYPO_MAP, PROVIDERS, KEYBOARD_MAP } from '../data/registry';
 
 export class EmailCorrector {
-  private cache = new Map<string, EmailSuggestion | null>();
   private additionalTLDs = new Set<string>();
   private knownDomainsSet: Set<string>;
   
@@ -70,34 +69,18 @@ export class EmailCorrector {
       return null;
     }
     
-    // Check cache for expensive operations
-    const cacheKey = domainLower;
-    if (this.cache.has(cacheKey)) {
-      const cached = this.cache.get(cacheKey);
-      return cached ? {
-        original: email,
-        suggested: `${username}@${cached.suggested.split('@')[1]}`,
-        confidence: cached.confidence,
-        reason: cached.reason
-      } : null;
-    }
-
-    // Expensive path: Domain suggestion
+    // Domain suggestion
     const suggestion = this.suggestDomain(domainLower, config);
     
     if (suggestion) {
-      const result = {
+      return {
         original: email,
         suggested: `${username}@${suggestion.domain}`,
         confidence: suggestion.confidence,
         reason: suggestion.reason
       };
-      // Cache the full result
-      this.cache.set(cacheKey, result);
-      return result;
     }
     
-    this.cache.set(cacheKey, null);
     return null;
   }
 
@@ -268,9 +251,6 @@ export class EmailCorrector {
     return this.knownDomainsSet.has(domain.toLowerCase());
   }
 
-  clearCache(): void {
-    this.cache.clear();
-  }
 
   /**
    * Load TLDs from IANA or custom source
@@ -291,9 +271,6 @@ export class EmailCorrector {
       
       // Add to our TLD set
       tlds.forEach(tld => this.additionalTLDs.add(tld));
-      
-      // Clear cache as we have new TLDs
-      this.clearCache();
     } catch (error) {
       console.warn('Failed to load TLDs from IANA:', error);
     }
@@ -339,5 +316,4 @@ const corrector = new EmailCorrector();
 // Exported functions
 export const correctEmail = (email: string, config?: EmailAutocorrectConfig) => corrector.correct(email, config);
 export const validateEmail = (email: string) => corrector.validate(email);
-export const clearCache = () => corrector.clearCache();
 export const loadTLDs = (source?: string) => corrector.loadTLDs(source);

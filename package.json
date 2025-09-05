@@ -1,7 +1,7 @@
 {
   "name": "email-autocorrect",
-  "version": "2.1.0",
-  "description": "Universal email typo correction for React Native, React, and Next.js. Zero dependencies, accessible, works everywhere",
+  "version": "2.1.1",
+  "description": "Unicode-first email validation with EAI/IDN support. Smart typo correction for React Native, React, and Next.js. Zero dependencies, tree-shakeable.",
   "main": "lib/commonjs/index.js",
   "module": "lib/module/index.js",
   "types": "lib/typescript/index.d.ts",
